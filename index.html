@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auto Generate Roll No</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        label, select, input {
+            display: block;
+            margin-bottom: 15px;
+        }
+        #result {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Roll No Generator</h2>
+
+<form id="rollForm">
+    <label for="baseRoll">Enter Base Roll No:</label>
+    <input type="text" id="baseRoll" name="baseRoll" required>
+
+    <label for="session">Select Session:</label>
+    <select id="session" name="session" required>
+        <option value="">--Select Session--</option>
+        <option value="2022-23">2022-23</option>
+        <option value="2023-24">2023-24</option>
+        <option value="2024-25">2024-25</option>
+    </select>
+
+    <label for="exam">Select Exam:</label>
+    <select id="exam" name="exam" required>
+        <option value="">--Select Exam--</option>
+        <option value="Mid-Term">Mid-Term</option>
+        <option value="Final">Final</option>
+        <option value="Reappear">Reappear</option>
+    </select>
+
+    <button type="button" onclick="generateRollNo()">Generate Roll No</button>
+</form>
+
+<div id="result"></div>
+
+<script>
+function generateRollNo() {
+    var baseRoll = document.getElementById("baseRoll").value.trim();
+    var session = document.getElementById("session").value;
+    var exam = document.getElementById("exam").value;
+
+    if (!baseRoll || !session || !exam) {
+        document.getElementById("result").innerHTML = "Please fill in all fields.";
+        return;
+    }
+
+    // Example format: 2023-24_Mid-Term_12345
+    var generatedRollNo = session + "_" + exam.replace(/ /g, '-') + "_" + baseRoll;
+
+    document.getElementById("result").innerHTML = "Generated Roll No: " + generatedRollNo;
+}
+</script>
+
+</body>
+</html>
