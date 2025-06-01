@@ -1,61 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Exam Form</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-  #examForm {
-    margin-top: 20px;
-    border: 1px solid #333;
-    padding: 15px;
-    width: 300px;
-  }
-  .hidden {
-    display: none;
-  }
-  button {
-    margin-top: 10px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Exam Form</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    label, input { font-size: 1.1em; }
+    .student-info, .exam-form { margin-top: 20px; }
+    .exam-form input[type="checkbox"] { margin-right: 10px; }
+  </style>
 </head>
 <body>
 
-<h2>Enter Roll Number</h2>
-<form id="rollForm">
-  <label for="rollNo">Roll Number:</label><br />
-  <input type="text" id="rollNo" name="rollNo" required /><br />
-  <button type="submit">Show Exam Form</button>
-</form>
+  <h1>Enter Roll Number</h1>
 
-<div id="examForm" class="hidden">
-  <h3>Offline Exam Form</h3>
-  <p><strong>Roll Number:</strong> <span id="displayRollNo"></span></p>
-  <p><strong>Student Name:</strong> ____________________</p>
-  <p><strong>Exam:</strong> ___________________________</p>
-  <p><strong>Date:</strong> ___________________________</p>
-  <button onclick="window.print()">Print Form</button>
-</div>
+  <form id="rollForm">
+    <label for="rollNo">Roll Number: </label>
+    <input type="text" id="rollNo" name="rollNo" required />
+    <button type="submit">Show Exam Form</button>
+  </form>
 
-<script>
-  const rollForm = document.getElementById('rollForm');
-  const examForm = document.getElementById('examForm');
-  const displayRollNo = document.getElementById('displayRollNo');
+  <div id="result"></div>
 
-  rollForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const rollNo = document.getElementById('rollNo').value.trim();
-    if (rollNo) {
-      displayRollNo.textContent = rollNo;
-      examForm.classList.remove('hidden');
-      rollForm.classList.add('hidden');
-    }
-  });
-</script>
+  <script>
+    // Sample student data
+    const students = [
+      {
+        rollNo: '101',
+        name: 'Alice Johnson',
+        class: '10th Grade',
+        subjects: ['Math', 'Science', 'English', 'History']
+      },
+      {
+        rollNo: '102',
+        name: 'Bob Smith',
+        class: '10th Grade',
+        subjects: ['Math', 'Science', 'English', 'Geography']
+      },
+      {
+        rollNo: '103',
+        name: 'Charlie Brown',
+        class: '11th Grade',
+        subjects: ['Physics', 'Chemistry', 'Math', 'English']
+      }
+    ];
+
+    const form = document.getElementById('rollForm');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const rollNoInput = document.getElementById('rollNo').value.trim();
+      const student = students.find(s => s.rollNo === rollNoInput);
+
+      if (!student) {
+        resultDiv.innerHTML = `<p style="color:red;">No student found with Roll Number: ${rollNoInput}</p>`;
+        return;
+      }
+
+      // Create student info section
+      let html = `
+        <div class="student-info">
+          <h2>Student Information</h2>
+          <p><strong>Name:</strong> ${student.name}</p>
+          <p><strong>Class:</strong> ${student.class}</p>
+          <p><strong>Roll Number:</strong> ${student.rollNo}</p>
+        </div>
+      `;
+
+      // Create exam form with subjects as checkbox options
+      html += `
+        <div class="exam-form">
+          <h2>Exam Form</h2>
+          <form id="examForm">
+      `;
+
+      student.subjects.forEach((subject, index) => {
+        html += `
+          <div>
+            <input type="checkbox" id="sub${index}" name="subjects" value="${subject}" checked />
+            <label for="sub${index}">${subject}</label>
+          </div>
+        `;
+      });
+
+      html += `
+            <button type="submit">Submit Exam Form</button>
+          </form>
+        </div>
+      `;
+
+      resultDiv.innerHTML = html;
+
+      // Handle exam form submission
+      const examForm = document.getElementById('examForm');
+      examForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const selectedSubjects = [...examForm.elements['subjects']]
+          .filter(input => input.checked)
+          .map(input => input.value);
+
+        if (selectedSubjects.length === 0) {
+          alert('Please select at least one subject!');
+          return;
+        }
+
+        alert(`Exam form submitted for subjects: ${selectedSubjects.join(', ')}`);
+      });
+    });
+  </script>
 
 </body>
 </html>
