@@ -5,110 +5,106 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Exam Form</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    label, input { font-size: 1.1em; }
-    .student-info, .exam-form { margin-top: 20px; }
-    .exam-form input[type="checkbox"] { margin-right: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .form-container {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      width: 400px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-  <h1>Enter Roll Number</h1>
+  <h2>Enter Roll Number</h2>
+  <input type="text" id="rollNoInput" placeholder="Enter Roll Number" />
+  <button onclick="generateForm()">Show Exam Form</button>
 
-  <form id="rollForm">
-    <label for="rollNo">Roll Number: </label>
-    <input type="text" id="rollNo" name="rollNo" required />
-    <button type="submit">Show Exam Form</button>
-  </form>
-
-  <div id="result"></div>
+  <div id="examForm" class="form-container" style="display:none;"></div>
 
   <script>
-    // Sample student data
-    const students = [
-      {
-        rollNo: '101',
-        name: 'Alice Johnson',
-        class: '10th Grade',
-        subjects: ['Math', 'Science', 'English', 'History']
-      },
-      {
-        rollNo: '102',
-        name: 'Bob Smith',
-        class: '10th Grade',
-        subjects: ['Math', 'Science', 'English', 'Geography']
-      },
-      {
-        rollNo: '103',
-        name: 'Charlie Brown',
-        class: '11th Grade',
-        subjects: ['Physics', 'Chemistry', 'Math', 'English']
-      }
-    ];
+    // Sample student data (simulate a database)
+    const students = {
+      '101': { name: 'Alice Johnson', course: 'B.Sc Physics', year: '2nd Year' },
+      '102': { name: 'Bob Smith', course: 'B.A History', year: '3rd Year' },
+      '103': { name: 'Charlie Brown', course: 'B.Com', year: '1st Year' }
+    };
 
-    const form = document.getElementById('rollForm');
-    const resultDiv = document.getElementById('result');
+    function generateAppId() {
+      // Generate a random 8-digit application ID
+      return 'APP' + Math.floor(10000000 + Math.random() * 90000000);
+    }
 
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();
-      const rollNoInput = document.getElementById('rollNo').value.trim();
-      const student = students.find(s => s.rollNo === rollNoInput);
+    function generateForm() {
+      const rollNo = document.getElementById('rollNoInput').value.trim();
+      const formDiv = document.getElementById('examForm');
 
-      if (!student) {
-        resultDiv.innerHTML = `<p style="color:red;">No student found with Roll Number: ${rollNoInput}</p>`;
+      if (!rollNo) {
+        alert('Please enter a roll number.');
+        formDiv.style.display = 'none';
         return;
       }
 
-      // Create student info section
-      let html = `
-        <div class="student-info">
-          <h2>Student Information</h2>
-          <p><strong>Name:</strong> ${student.name}</p>
-          <p><strong>Class:</strong> ${student.class}</p>
-          <p><strong>Roll Number:</strong> ${student.rollNo}</p>
-        </div>
+      const student = students[rollNo];
+      if (!student) {
+        alert('No student found with this roll number.');
+        formDiv.style.display = 'none';
+        return;
+      }
+
+      const appId = generateAppId();
+
+      formDiv.style.display = 'block';
+      formDiv.innerHTML = `
+        <h3>Exam Form</h3>
+        <p><strong>Application ID:</strong> ${appId}</p>
+        <p><strong>Roll Number:</strong> ${rollNo}</p>
+        <p><strong>Name:</strong> ${student.name}</p>
+        <p><strong>Course:</strong> ${student.course}</p>
+        <p><strong>Year:</strong> ${student.year}</p>
+        
+        <label for="examSubject">Select Exam Subject:</label>
+        <select id="examSubject">
+          <option value="Maths">Mathematics</option>
+          <option value="Physics">Physics</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="History">History</option>
+          <option value="Economics">Economics</option>
+        </select>
+        
+        <button onclick="printForm()">Print Form</button>
       `;
+    }
 
-      // Create exam form with subjects as checkbox options
-      html += `
-        <div class="exam-form">
-          <h2>Exam Form</h2>
-          <form id="examForm">
-      `;
-
-      student.subjects.forEach((subject, index) => {
-        html += `
-          <div>
-            <input type="checkbox" id="sub${index}" name="subjects" value="${subject}" checked />
-            <label for="sub${index}">${subject}</label>
-          </div>
-        `;
-      });
-
-      html += `
-            <button type="submit">Submit Exam Form</button>
-          </form>
-        </div>
-      `;
-
-      resultDiv.innerHTML = html;
-
-      // Handle exam form submission
-      const examForm = document.getElementById('examForm');
-      examForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const selectedSubjects = [...examForm.elements['subjects']]
-          .filter(input => input.checked)
-          .map(input => input.value);
-
-        if (selectedSubjects.length === 0) {
-          alert('Please select at least one subject!');
-          return;
-        }
-
-        alert(`Exam form submitted for subjects: ${selectedSubjects.join(', ')}`);
-      });
-    });
+    function printForm() {
+      const formContent = document.getElementById('examForm').innerHTML;
+      const printWindow = window.open('', '', 'width=600,height=600');
+      printWindow.document.write('<html><head><title>Print Exam Form</title></head><body>');
+      printWindow.document.write(formContent);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }
   </script>
 
 </body>
