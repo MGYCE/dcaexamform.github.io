@@ -43,7 +43,7 @@
   <script>
     // Sample student data (simulate a database)
     const students = {
-      '101': { name: 'Alice Johnson', course: 'B.Sc Physics', year: '2nd Year' },
+      'EX101': { name: 'Punam Gour', course: 'DCA', year: '12 Months' },
       '102': { name: 'Bob Smith', course: 'B.A History', year: '3rd Year' },
       '103': { name: 'Charlie Brown', course: 'B.Com', year: '1st Year' }
     };
@@ -79,15 +79,15 @@
         <p><strong>Roll Number:</strong> ${rollNo}</p>
         <p><strong>Name:</strong> ${student.name}</p>
         <p><strong>Course:</strong> ${student.course}</p>
-        <p><strong>Year:</strong> ${student.year}</p>
+        <p><strong>Duration:</strong> ${student.year}</p>
         
-        <label for="examSubject">Select Exam Subject:</label>
+        <label for="examSubject">Select Exam:</label>
         <select id="examSubject">
-          <option value="Maths">Mathematics</option>
-          <option value="Physics">Physics</option>
-          <option value="Chemistry">Chemistry</option>
-          <option value="History">History</option>
-          <option value="Economics">Economics</option>
+          <option value="Maths">DCA First Term Examination 2025</option>
+          <option value="Physics">DCA Second Term Examination 2025</option>
+          <option value="Chemistry">DCA Third Term Examination 2025</option>
+          <option value="History">DCA Fourth Term Examination 2025</option>
+          <option value="Economics">DCA Final 2025-26</option>
         </select>
         
         <button onclick="printForm()">Print Form</button>
