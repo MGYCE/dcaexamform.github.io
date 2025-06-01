@@ -1,67 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Auto Generate Roll No</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
-        label, select, input {
-            display: block;
-            margin-bottom: 15px;
-        }
-        #result {
-            font-weight: bold;
-            margin-top: 20px;
-        }
-    </style>
+  <title>Auto Generate Roll Number</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    label, select, input { display: block; margin: 10px 0; }
+    #generatedRoll { font-weight: bold; color: green; }
+  </style>
 </head>
 <body>
 
-<h2>Roll No Generator</h2>
+<h2>Student Roll Number Generator</h2>
 
-<form id="rollForm">
-    <label for="baseRoll">Enter Base Roll No:</label>
-    <input type="text" id="baseRoll" name="baseRoll" required>
+<!-- Step 1: Enter Existing Roll Number -->
+<label for="rollInput">Enter Previous Roll Number (if any):</label>
+<input type="text" id="rollInput" placeholder="e.g. 2021CS001" />
 
-    <label for="session">Select Session:</label>
-    <select id="session" name="session" required>
-        <option value="">--Select Session--</option>
-        <option value="2022-23">2022-23</option>
-        <option value="2023-24">2023-24</option>
-        <option value="2024-25">2024-25</option>
-    </select>
+<!-- Step 2: Select Session -->
+<label for="sessionSelect">Select Session:</label>
+<select id="sessionSelect">
+  <option value="">--Select Session--</option>
+  <option value="2022-2023">2022-2023</option>
+  <option value="2023-2024">2023-2024</option>
+  <option value="2024-2025">2024-2025</option>
+</select>
 
-    <label for="exam">Select Exam:</label>
-    <select id="exam" name="exam" required>
-        <option value="">--Select Exam--</option>
-        <option value="Mid-Term">Mid-Term</option>
-        <option value="Final">Final</option>
-        <option value="Reappear">Reappear</option>
-    </select>
+<!-- Step 3: Fill Student Details -->
+<label for="name">Student Name:</label>
+<input type="text" id="name" placeholder="e.g. John Doe" />
 
-    <button type="button" onclick="generateRollNo()">Generate Roll No</button>
-</form>
+<label for="department">Department:</label>
+<input type="text" id="department" placeholder="e.g. CSE" />
 
-<div id="result"></div>
+<!-- Step 4: Generate Button -->
+<button onclick="generateRoll()">Generate Roll Number</button>
+
+<!-- Display Result -->
+<p id="generatedRoll"></p>
 
 <script>
-function generateRollNo() {
-    var baseRoll = document.getElementById("baseRoll").value.trim();
-    var session = document.getElementById("session").value;
-    var exam = document.getElementById("exam").value;
+  function generateRoll() {
+    const name = document.getElementById('name').value.trim();
+    const dept = document.getElementById('department').value.trim().toUpperCase();
+    const session = document.getElementById('sessionSelect').value;
 
-    if (!baseRoll || !session || !exam) {
-        document.getElementById("result").innerHTML = "Please fill in all fields.";
-        return;
+    if (!name || !dept || !session) {
+      alert("Please fill all fields.");
+      return;
     }
 
-    // Example format: 2023-24_Mid-Term_12345
-    var generatedRollNo = session + "_" + exam.replace(/ /g, '-') + "_" + baseRoll;
+    // Example logic to generate roll number: YYYY<DEPT><Random Number>
+    const year = session.split('-')[0];
+    const randomNum = Math.floor(100 + Math.random() * 900); // 3-digit random
+    const roll = `${year}${dept}${randomNum}`;
 
-    document.getElementById("result").innerHTML = "Generated Roll No: " + generatedRollNo;
-}
+    document.getElementById('generatedRoll').innerText = `Generated Roll Number: ${roll}`;
+  }
 </script>
 
 </body>
